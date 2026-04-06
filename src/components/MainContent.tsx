@@ -16,14 +16,14 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
         <div className="max-w-2xl mb-8">
           <input 
             type="text" 
-            placeholder="What do you want to listen to?" 
+            placeholder="O que você quer ouvir?" 
             className="w-full bg-white/10 border border-white/20 rounded-full py-3 px-6 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-md"
           />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-6">Browse all</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">Navegar por tudo</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {['Pop', 'Hip-Hop', 'Rock', 'Latin', 'Podcast', 'Mood', 'Indie', 'Workout'].map((genre, i) => (
-            <div key={genre} className={`aspect-square rounded-xl p-4 relative overflow-hidden cursor-pointer hover:scale-105 transition-transform`} style={{ backgroundColor: \`hsl(\${i * 45}, 70%, 40%)\` }}>
+          {['Pop', 'Hip-Hop', 'Rock', 'Latina', 'Podcast', 'Clima', 'Indie', 'Treino'].map((genre, i) => (
+            <div key={genre} className={`aspect-square rounded-xl p-4 relative overflow-hidden cursor-pointer hover:scale-105 transition-transform`} style={{ backgroundColor: `hsl(${i * 45}, 70%, 40%)` }}>
               <span className="text-white font-bold text-xl">{genre}</span>
             </div>
           ))}
@@ -35,7 +35,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
   if (currentView === 'library') {
     return (
       <div className="flex-1 overflow-y-auto p-8 relative z-10">
-        <h2 className="text-3xl font-bold text-white mb-6">Your Library</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">Sua Biblioteca</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {MOCK_PLAYLISTS.map((playlist) => (
             <div key={playlist.id} className="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors cursor-pointer group">
@@ -59,7 +59,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
 
   return (
     <div className="flex-1 overflow-y-auto p-8 relative z-10">
-      <h2 className="text-3xl font-bold text-white mb-6">Good evening</h2>
+      <h2 className="text-3xl font-bold text-white mb-6">Boa noite</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
         {MOCK_PLAYLISTS.slice(0, 6).map((playlist) => (
@@ -79,7 +79,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
         ))}
       </div>
 
-      <h2 className="text-2xl font-bold text-white mb-6 hover:underline cursor-pointer">Recently played</h2>
+      <h2 className="text-2xl font-bold text-white mb-6 hover:underline cursor-pointer">Tocadas recentemente</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-10">
         {MOCK_SONGS.slice(0, 5).map((song) => (
           <div key={song.id} className="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors cursor-pointer group">
@@ -98,7 +98,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
         ))}
       </div>
       
-      <h2 className="text-2xl font-bold text-white mb-6 hover:underline cursor-pointer">Made for you</h2>
+      <h2 className="text-2xl font-bold text-white mb-6 hover:underline cursor-pointer">Feito para você</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-8">
         {MOCK_PLAYLISTS.map((playlist) => (
           <div key={playlist.id} className="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors cursor-pointer group">

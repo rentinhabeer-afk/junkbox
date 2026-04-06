@@ -1,5 +1,5 @@
 {
   "name": "Jukebox",
-  "description": "An intuitive music player with personalized playlists.",
+  "description": "Um reprodutor de música intuitivo com playlists personalizadas.",
   "requestFramePermissions": []
 }

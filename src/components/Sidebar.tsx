@@ -8,9 +8,9 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'search', label: 'Search', icon: Search },
-    { id: 'library', label: 'Your Library', icon: Library },
+    { id: 'home', label: 'Início', icon: Home },
+    { id: 'search', label: 'Buscar', icon: Search },
+    { id: 'library', label: 'Sua Biblioteca', icon: Library },
   ];
 
   return (
@@ -46,23 +46,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
           <div className="w-6 h-6 bg-gray-300 rounded-sm flex items-center justify-center text-black">
             <PlusSquare className="w-4 h-4" />
           </div>
-          Create Playlist
+          Criar Playlist
         </button>
         <button className="flex items-center gap-4 w-full text-left hover:text-white transition-colors duration-200">
           <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-sm flex items-center justify-center text-white">
             <Heart className="w-4 h-4" />
           </div>
-          Liked Songs
+          Músicas Curtidas
         </button>
       </div>
 
       <div className="mt-auto border-t border-white/10 pt-6">
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-4">Playlists</div>
         <div className="space-y-3 overflow-y-auto max-h-48 scrollbar-hide">
-          <p className="text-sm hover:text-white cursor-pointer truncate">Chill Vibes</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Workout Mix</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Discover Weekly</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Focus Flow</p>
+          <p className="text-sm hover:text-white cursor-pointer truncate">Vibe Relax</p>
+          <p className="text-sm hover:text-white cursor-pointer truncate">Treino</p>
+          <p className="text-sm hover:text-white cursor-pointer truncate">Descobertas da Semana</p>
+          <p className="text-sm hover:text-white cursor-pointer truncate">Foco e Concentração</p>
         </div>
       </div>
     </div>
