@@ -1,0 +1,5 @@
+{
+  "name": "Jukebox",
+  "description": "An intuitive music player with personalized playlists.",
+  "requestFramePermissions": []
+}
