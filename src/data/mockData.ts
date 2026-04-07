@@ -91,33 +91,4 @@ export const MOCK_SONGS: Song[] = [
   }
 ];
 
-export const MOCK_PLAYLISTS: Playlist[] = [
-  {
-    id: 'p1',
-    name: 'Descobertas da Semana',
-    description: 'Músicas novas com a sua cara. Atualizada toda segunda-feira.',
-    coverUrl: 'https://images.unsplash.com/photo-1493225457124-a1a2a5956093?q=80&w=500&auto=format&fit=crop',
-    songs: [MOCK_SONGS[0], MOCK_SONGS[2], MOCK_SONGS[4], MOCK_SONGS[7]],
-  },
-  {
-    id: 'p2',
-    name: 'Vibe Relax',
-    description: 'Relaxe e aproveite com essas músicas tranquilas.',
-    coverUrl: 'https://images.unsplash.com/photo-1529156069898-49953eb1b5ce?q=80&w=500&auto=format&fit=crop',
-    songs: [MOCK_SONGS[1], MOCK_SONGS[3], MOCK_SONGS[6]],
-  },
-  {
-    id: 'p3',
-    name: 'Treino',
-    description: 'Músicas cheias de energia para manter você em movimento.',
-    coverUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=500&auto=format&fit=crop',
-    songs: [MOCK_SONGS[0], MOCK_SONGS[2], MOCK_SONGS[5], MOCK_SONGS[7]],
-  },
-  {
-    id: 'p4',
-    name: 'Foco e Concentração',
-    description: 'Batidas instrumentais para ajudar na concentração.',
-    coverUrl: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=500&auto=format&fit=crop',
-    songs: [MOCK_SONGS[1], MOCK_SONGS[4], MOCK_SONGS[6]],
-  }
-];
+export const MOCK_PLAYLISTS: Playlist[] = [];

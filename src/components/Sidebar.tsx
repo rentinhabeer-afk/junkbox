@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Library, PlusSquare, Heart, ListMusic } from 'lucide-react';
+import { Home, Search, Library, PlusSquare, Heart, ListMusic, Cloud } from 'lucide-react';
 
 interface SidebarProps {
   currentView: string;
@@ -11,15 +11,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
     { id: 'home', label: 'Início', icon: Home },
     { id: 'search', label: 'Buscar', icon: Search },
     { id: 'library', label: 'Sua Biblioteca', icon: Library },
+    { id: 'drive', label: 'Meu Drive', icon: Cloud },
   ];
 
   return (
-    <div className="w-64 bg-black/40 backdrop-blur-xl border-r border-white/5 flex flex-col h-full text-gray-300 p-6">
+    <div className="hidden md:flex w-64 bg-black/40 backdrop-blur-xl border-r border-white/5 flex-col h-full text-gray-300 p-6">
       <div className="flex items-center gap-3 mb-10">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center">
           <ListMusic className="w-5 h-5 text-white" />
         </div>
-        <h1 className="text-xl font-bold text-white tracking-tight">Jukebox</h1>
+        <h1 className="text-xl font-bold text-white tracking-tight">William</h1>
       </div>
 
       <nav className="space-y-4 mb-10">
@@ -58,11 +59,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
 
       <div className="mt-auto border-t border-white/10 pt-6">
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-4">Playlists</div>
-        <div className="space-y-3 overflow-y-auto max-h-48 scrollbar-hide">
-          <p className="text-sm hover:text-white cursor-pointer truncate">Vibe Relax</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Treino</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Descobertas da Semana</p>
-          <p className="text-sm hover:text-white cursor-pointer truncate">Foco e Concentração</p>
+        <div className="space-y-3 overflow-y-auto max-h-48 scrollbar-hide text-gray-500 text-sm">
+          Nenhuma playlist criada.
         </div>
       </div>
     </div>

@@ -23,9 +23,9 @@ export const Player: React.FC = () => {
 
   if (!currentSong) {
     return (
-      <div className="h-24 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex items-center justify-between px-6 z-50 relative">
-        <div className="w-1/3"></div>
-        <div className="w-1/3 flex flex-col items-center justify-center gap-2">
+      <div className="h-16 md:h-24 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex items-center justify-between px-4 md:px-6 z-50 relative">
+        <div className="w-full md:w-1/3"></div>
+        <div className="hidden md:flex w-1/3 flex-col items-center justify-center gap-2">
           <div className="flex items-center gap-6">
             <button className="text-gray-400 hover:text-white transition"><Shuffle className="w-4 h-4" /></button>
             <button className="text-gray-400 hover:text-white transition"><SkipBack className="w-5 h-5" /></button>
@@ -41,25 +41,42 @@ export const Player: React.FC = () => {
             <span>0:00</span>
           </div>
         </div>
-        <div className="w-1/3"></div>
+        <div className="hidden md:block w-1/3"></div>
       </div>
     );
   }
 
   return (
-    <div className="h-24 bg-[#0a0502]/90 backdrop-blur-2xl border-t border-white/5 flex items-center justify-between px-6 z-50 relative">
-      <div className="w-1/3 flex items-center gap-4">
-        <img src={currentSong.coverUrl} alt={currentSong.title} className="w-14 h-14 rounded-md object-cover shadow-lg" />
-        <div className="flex flex-col">
-          <span className="text-white font-medium text-sm hover:underline cursor-pointer">{currentSong.title}</span>
-          <span className="text-gray-400 text-xs hover:underline cursor-pointer">{currentSong.artist}</span>
-        </div>
-        <button className="ml-4 text-gray-400 hover:text-white transition">
-          <Heart className="w-5 h-5" />
-        </button>
+    <div className="h-16 md:h-24 bg-[#0a0502]/90 backdrop-blur-2xl border-t border-white/5 flex items-center justify-between px-4 md:px-6 z-50 relative">
+      {/* Mobile Progress Bar */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gray-800 md:hidden">
+        <div className="h-full bg-[#ff4e00]" style={{ width: `${(progress / (duration || 1)) * 100}%` }}></div>
       </div>
 
-      <div className="w-1/3 flex flex-col items-center justify-center gap-2">
+      <div className="w-full md:w-1/3 flex items-center justify-between md:justify-start gap-4">
+        <div className="flex items-center gap-3 md:gap-4 overflow-hidden">
+          <img src={currentSong.coverUrl} alt={currentSong.title} className="w-10 h-10 md:w-14 md:h-14 rounded-md object-cover shadow-lg flex-shrink-0" />
+          <div className="flex flex-col overflow-hidden">
+            <span className="text-white font-medium text-sm hover:underline cursor-pointer truncate">{currentSong.title}</span>
+            <span className="text-gray-400 text-xs hover:underline cursor-pointer truncate">{currentSong.artist}</span>
+          </div>
+          <button className="hidden md:block ml-4 text-gray-400 hover:text-white transition">
+            <Heart className="w-5 h-5" />
+          </button>
+        </div>
+        
+        {/* Mobile Controls */}
+        <div className="flex md:hidden items-center gap-4 flex-shrink-0">
+          <button className="text-gray-400 hover:text-white transition">
+            <Heart className="w-5 h-5" />
+          </button>
+          <button onClick={togglePlayPause} className="text-white">
+            {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+          </button>
+        </div>
+      </div>
+
+      <div className="hidden md:flex w-1/3 flex-col items-center justify-center gap-2">
         <div className="flex items-center gap-6">
           <button className="text-gray-400 hover:text-white transition"><Shuffle className="w-4 h-4" /></button>
           <button onClick={playPrevious} className="text-gray-400 hover:text-white transition"><SkipBack className="w-5 h-5" /></button>
@@ -99,7 +116,7 @@ export const Player: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-1/3 flex items-center justify-end gap-3">
+      <div className="hidden md:flex w-1/3 items-center justify-end gap-3">
         <button onClick={() => setVolume(volume === 0 ? 0.8 : 0)} className="text-gray-400 hover:text-white transition">
           {volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
         </button>
