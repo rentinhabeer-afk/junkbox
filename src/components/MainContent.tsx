@@ -54,7 +54,10 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
         <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center mb-8">
           <Folder className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <p className="text-lg text-white mb-2">Ouça as músicas salvas no seu aparelho</p>
-          <p className="text-sm text-gray-400 mb-6">Selecione os arquivos de áudio (.mp3, .wav, etc) da sua memória local.</p>
+          <p className="text-sm text-gray-400 mb-6">
+            Selecione os arquivos de áudio da sua memória local.<br/>
+            <span className="text-[#ff4e00] font-medium mt-2 block">Dica: Pressione e segure uma música para selecionar várias de uma vez.</span>
+          </p>
           
           <input 
             type="file" 
