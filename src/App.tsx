@@ -8,7 +8,7 @@ import { Sidebar } from './components/Sidebar';
 import { Player } from './components/Player';
 import { MainContent } from './components/MainContent';
 import { PlayerProvider } from './context/PlayerContext';
-import { Home, Library, Folder } from 'lucide-react';
+import { Home, Folder } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -35,10 +35,6 @@ export default function App() {
             <button onClick={() => setCurrentView('home')} className={`flex flex-col items-center gap-1 p-2 ${currentView === 'home' ? 'text-white' : 'text-gray-400'}`}>
               <Home className="w-6 h-6" />
               <span className="text-[10px] font-medium">Início</span>
-            </button>
-            <button onClick={() => setCurrentView('library')} className={`flex flex-col items-center gap-1 p-2 ${currentView === 'library' ? 'text-white' : 'text-gray-400'}`}>
-              <Library className="w-6 h-6" />
-              <span className="text-[10px] font-medium">Biblioteca</span>
             </button>
             <button onClick={() => setCurrentView('local')} className={`flex flex-col items-center gap-1 p-2 ${currentView === 'local' ? 'text-white' : 'text-gray-400'}`}>
               <Folder className="w-6 h-6" />

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { MOCK_PLAYLISTS, MOCK_SONGS } from '../data/mockData';
 import { usePlayer } from '../context/PlayerContext';
-import { Play, Folder, FileAudio, Upload } from 'lucide-react';
+import { Play, Folder, FileAudio, Upload, Loader2 } from 'lucide-react';
 
 interface MainContentProps {
   currentView: string;
@@ -10,9 +10,11 @@ interface MainContentProps {
 export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
   const { playSong } = usePlayer();
   const [localFiles, setLocalFiles] = useState<any[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processProgress, setProcessProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
@@ -25,9 +27,15 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
       return;
     }
 
-    const newSongs = validFiles.map((file) => {
+    setIsProcessing(true);
+    setProcessProgress(0);
+
+    const newSongs: any[] = [];
+
+    for (let i = 0; i < validFiles.length; i++) {
+      const file = validFiles[i];
       const objectUrl = URL.createObjectURL(file);
-      return {
+      newSongs.push({
         id: objectUrl,
         title: file.name.replace(/\.[^/.]+$/, ""),
         artist: 'Arquivo Local',
@@ -35,10 +43,16 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
         coverUrl: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500&auto=format&fit=crop',
         audioUrl: objectUrl,
         duration: 0,
-      };
-    });
+      });
+
+      setProcessProgress(Math.round(((i + 1) / validFiles.length) * 100));
+      // Pequeno atraso para permitir que a interface atualize e mostre o progresso
+      await new Promise(resolve => setTimeout(resolve, 30));
+    }
 
     setLocalFiles((prev) => [...prev, ...newSongs]);
+    setIsProcessing(false);
+    setProcessProgress(0);
     
     // Limpa o input para permitir selecionar os mesmos arquivos novamente se necessário
     if (fileInputRef.current) {
@@ -66,13 +80,24 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
             className="hidden" 
             ref={fileInputRef}
             onChange={handleFileUpload}
+            disabled={isProcessing}
           />
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="px-6 py-3 bg-[#ff4e00] text-white font-medium rounded-full hover:scale-105 transition-transform flex items-center justify-center gap-2 mx-auto"
+            disabled={isProcessing}
+            className={`px-6 py-3 bg-[#ff4e00] text-white font-medium rounded-full transition-transform flex items-center justify-center gap-2 mx-auto ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
           >
-            <Upload className="w-5 h-5" />
-            Adicionar Músicas
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Adicionando... {processProgress}%
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5" />
+                Adicionar Músicas
+              </>
+            )}
           </button>
         </div>
 
@@ -118,31 +143,6 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
           {['Pop', 'Hip-Hop', 'Rock', 'Latina', 'Podcast', 'Eletrônica', 'Indie', 'Jazz'].map((genre, i) => (
             <div key={genre} className={`aspect-square rounded-xl p-4 relative overflow-hidden cursor-pointer hover:scale-105 transition-transform`} style={{ backgroundColor: `hsl(${i * 45}, 70%, 40%)` }}>
               <span className="text-white font-bold text-xl">{genre}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (currentView === 'library') {
-    return (
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 relative z-10">
-        <h2 className="text-3xl font-bold text-white mb-6">Sua Biblioteca</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {MOCK_PLAYLISTS.map((playlist) => (
-            <div key={playlist.id} className="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors cursor-pointer group">
-              <div className="relative mb-4">
-                <img src={playlist.coverUrl} alt={playlist.name} className="w-full aspect-square object-cover rounded-md shadow-lg" />
-                <button 
-                  onClick={(e) => { e.stopPropagation(); playSong(playlist.songs[0], playlist); }}
-                  className="absolute bottom-2 right-2 w-12 h-12 bg-[#ff4e00] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 shadow-xl"
-                >
-                  <Play className="w-6 h-6 ml-1" />
-                </button>
-              </div>
-              <h3 className="text-white font-bold truncate">{playlist.name}</h3>
-              <p className="text-gray-400 text-sm mt-1 line-clamp-2">{playlist.description}</p>
             </div>
           ))}
         </div>
