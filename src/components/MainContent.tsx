@@ -16,7 +16,16 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
     const files = event.target.files;
     if (!files) return;
 
-    const newSongs = Array.from(files).map((file) => {
+    const validFiles = Array.from(files).filter(file => 
+      file.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|flac|aac)$/i.test(file.name)
+    );
+
+    if (validFiles.length === 0) {
+      alert("Por favor, selecione arquivos de áudio válidos (.mp3, .wav, etc).");
+      return;
+    }
+
+    const newSongs = validFiles.map((file) => {
       const objectUrl = URL.createObjectURL(file);
       return {
         id: objectUrl,
@@ -30,6 +39,11 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
     });
 
     setLocalFiles((prev) => [...prev, ...newSongs]);
+    
+    // Limpa o input para permitir selecionar os mesmos arquivos novamente se necessário
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   if (currentView === 'local' || currentView === 'drive') {
@@ -44,7 +58,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
           
           <input 
             type="file" 
-            accept="audio/*" 
+            accept="*/*" 
             multiple 
             className="hidden" 
             ref={fileInputRef}
