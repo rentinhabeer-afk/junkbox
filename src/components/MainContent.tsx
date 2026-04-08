@@ -216,25 +216,52 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 relative z-10">
-      <h2 className="text-3xl font-bold text-white mb-6">Boa noite</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-        {MOCK_PLAYLISTS.slice(0, 6).map((playlist) => (
-          <div 
-            key={playlist.id} 
-            className="flex items-center bg-white/5 hover:bg-white/20 transition-colors rounded-md overflow-hidden cursor-pointer group"
-          >
-            <img src={playlist.coverUrl} alt={playlist.name} className="w-20 h-20 object-cover shadow-md" />
-            <span className="text-white font-bold ml-4 flex-1">{playlist.name}</span>
-            <button 
-              onClick={(e) => { e.stopPropagation(); playSong(playlist.songs[0], playlist); }}
-              className="w-12 h-12 bg-[#ff4e00] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all shadow-xl mr-4"
-            >
-              <Play className="w-6 h-6 ml-1" />
-            </button>
+    <div className="flex-1 overflow-y-auto pb-32 md:pb-8 relative z-10">
+      {/* Banner / Wallpaper Section */}
+      <div className="relative h-64 md:h-80 w-full overflow-hidden mb-8">
+        <img 
+          src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=2000&auto=format&fit=crop" 
+          alt="Wallpaper" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0502] via-[#0a0502]/60 to-transparent"></div>
+        
+        <div className="absolute bottom-0 left-0 p-6 md:p-10 w-full flex items-end justify-between">
+          <div>
+            {/* Logo */}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#ff4e00] to-pink-600 flex items-center justify-center shadow-lg">
+                <Play className="w-6 h-6 text-white ml-1" />
+              </div>
+              <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 tracking-tight">
+                William
+              </h1>
+            </div>
+            <p className="text-gray-300 text-lg md:text-xl font-medium ml-1">
+              Sua trilha sonora pessoal
+            </p>
           </div>
-        ))}
+        </div>
+      </div>
+
+      <div className="px-4 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          {MOCK_PLAYLISTS.slice(0, 6).map((playlist) => (
+            <div 
+              key={playlist.id} 
+              className="flex items-center bg-white/5 hover:bg-white/20 transition-colors rounded-md overflow-hidden cursor-pointer group"
+            >
+              <img src={playlist.coverUrl} alt={playlist.name} className="w-20 h-20 object-cover shadow-md" />
+              <span className="text-white font-bold ml-4 flex-1">{playlist.name}</span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); playSong(playlist.songs[0], playlist); }}
+                className="w-12 h-12 bg-[#ff4e00] rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all shadow-xl mr-4"
+              >
+                <Play className="w-6 h-6 ml-1" />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
