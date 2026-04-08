@@ -8,7 +8,7 @@ import { Sidebar } from './components/Sidebar';
 import { Player } from './components/Player';
 import { MainContent } from './components/MainContent';
 import { PlayerProvider } from './context/PlayerContext';
-import { Home, Library, Cloud } from 'lucide-react';
+import { Home, Library, Folder } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -40,9 +40,9 @@ export default function App() {
               <Library className="w-6 h-6" />
               <span className="text-[10px] font-medium">Biblioteca</span>
             </button>
-            <button onClick={() => setCurrentView('drive')} className={`flex flex-col items-center gap-1 p-2 ${currentView === 'drive' ? 'text-white' : 'text-gray-400'}`}>
-              <Cloud className="w-6 h-6" />
-              <span className="text-[10px] font-medium">Drive</span>
+            <button onClick={() => setCurrentView('local')} className={`flex flex-col items-center gap-1 p-2 ${currentView === 'local' ? 'text-white' : 'text-gray-400'}`}>
+              <Folder className="w-6 h-6" />
+              <span className="text-[10px] font-medium">Arquivos</span>
             </button>
           </div>
         </div>

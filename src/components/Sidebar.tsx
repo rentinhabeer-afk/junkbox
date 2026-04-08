@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Library, PlusSquare, Heart, ListMusic, Cloud } from 'lucide-react';
+import { Home, Search, Library, PlusSquare, Heart, ListMusic, Folder } from 'lucide-react';
 
 interface SidebarProps {
   currentView: string;
@@ -11,7 +11,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView })
     { id: 'home', label: 'Início', icon: Home },
     { id: 'search', label: 'Buscar', icon: Search },
     { id: 'library', label: 'Sua Biblioteca', icon: Library },
-    { id: 'drive', label: 'Meu Drive', icon: Cloud },
+    { id: 'local', label: 'Meus Arquivos', icon: Folder },
   ];
 
   return (

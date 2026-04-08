@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { MOCK_PLAYLISTS, MOCK_SONGS } from '../data/mockData';
 import { usePlayer } from '../context/PlayerContext';
-import { Play, Cloud } from 'lucide-react';
+import { Play, Folder, FileAudio, Upload } from 'lucide-react';
 
 interface MainContentProps {
   currentView: string;
@@ -9,27 +9,78 @@ interface MainContentProps {
 
 export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
   const { playSong } = usePlayer();
+  const [localFiles, setLocalFiles] = useState<any[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (currentView === 'drive') {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const newSongs = Array.from(files).map((file) => {
+      const objectUrl = URL.createObjectURL(file);
+      return {
+        id: objectUrl,
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        artist: 'Arquivo Local',
+        album: 'Meu Aparelho',
+        coverUrl: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500&auto=format&fit=crop',
+        audioUrl: objectUrl,
+        duration: 0,
+      };
+    });
+
+    setLocalFiles((prev) => [...prev, ...newSongs]);
+  };
+
+  if (currentView === 'local' || currentView === 'drive') {
     return (
       <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 relative z-10">
-        <div className="max-w-2xl mb-8">
-          <div className="relative">
-            <Cloud className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input 
-              type="text" 
-              placeholder="Buscar músicas no Google Drive..." 
-              className="w-full bg-white/10 border border-white/20 rounded-full py-3 pl-12 pr-6 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-md"
-            />
-          </div>
-        </div>
-        <h2 className="text-2xl font-bold text-white mb-6">Arquivos do Drive</h2>
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-          <Cloud className="w-16 h-16 mb-4 opacity-50" />
-          <p className="text-lg text-center">Conecte seu Google Drive para ouvir suas próprias músicas.</p>
-          <button className="mt-6 px-6 py-2 bg-white text-black font-medium rounded-full hover:scale-105 transition-transform">
-            Conectar Drive
+        <h2 className="text-2xl font-bold text-white mb-6">Músicas do Aparelho</h2>
+        
+        <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center mb-8">
+          <Folder className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+          <p className="text-lg text-white mb-2">Ouça as músicas salvas no seu aparelho</p>
+          <p className="text-sm text-gray-400 mb-6">Selecione os arquivos de áudio (.mp3, .wav, etc) da sua memória local.</p>
+          
+          <input 
+            type="file" 
+            accept="audio/*" 
+            multiple 
+            className="hidden" 
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+          />
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            className="px-6 py-3 bg-[#ff4e00] text-white font-medium rounded-full hover:scale-105 transition-transform flex items-center justify-center gap-2 mx-auto"
+          >
+            <Upload className="w-5 h-5" />
+            Adicionar Músicas
           </button>
+        </div>
+
+        <div className="space-y-2">
+          {localFiles.length === 0 ? (
+            <div className="text-center py-10 text-gray-400">
+              Nenhuma música adicionada ainda.
+            </div>
+          ) : (
+            localFiles.map((file) => (
+              <div 
+                key={file.id}
+                onClick={() => playSong(file)}
+                className="flex items-center gap-4 p-3 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
+              >
+                <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-[#ff4e00] transition-colors">
+                  <Play className="w-5 h-5" />
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-white font-medium truncate">{file.title}</p>
+                  <p className="text-gray-400 text-xs">Arquivo Local</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     );
