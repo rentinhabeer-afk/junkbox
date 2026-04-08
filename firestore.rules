@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: users/{userId}/songs
+    // Document ID: auto-generated
+    // Fields:
+    //   - title: string (required, max 200 chars)
+    //   - artist: string (optional, max 200 chars)
+    //   - album: string (optional, max 200 chars)
+    //   - coverUrl: string (optional, max 1000 chars)
+    //   - audioUrl: string (required, max 1000 chars)
+    //   - duration: number (optional, positive)
+    //   - createdAt: timestamp (required, immutable)
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function isValidStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+    
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !('field' in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    function isValidSong() {
+      return hasRequiredFields(['title', 'audioUrl', 'createdAt']) &&
+             isValidStringLength('title', 1, 200) &&
+             isValidStringLength('audioUrl', 1, 1000) &&
+             request.resource.data.createdAt is timestamp &&
+             (!('artist' in request.resource.data) || isValidStringLength('artist', 0, 200)) &&
+             (!('album' in request.resource.data) || isValidStringLength('album', 0, 200)) &&
+             (!('coverUrl' in request.resource.data) || isValidStringLength('coverUrl', 0, 1000)) &&
+             (!('duration' in request.resource.data) || (request.resource.data.duration is number && request.resource.data.duration >= 0));
+    }
+
+    match /users/{userId}/songs/{songId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidSong();
+      allow update: if isOwner(userId) && isValidSong() && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isOwner(userId);
+    }
+  }
+}

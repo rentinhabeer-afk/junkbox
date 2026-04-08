@@ -1,0 +1,25 @@
+{
+  "entities": {
+    "Song": {
+      "title": "Song",
+      "description": "A song uploaded by the user",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Song title" },
+        "artist": { "type": "string", "description": "Song artist" },
+        "album": { "type": "string", "description": "Song album" },
+        "coverUrl": { "type": "string", "description": "Cover image URL" },
+        "audioUrl": { "type": "string", "description": "Audio file URL" },
+        "duration": { "type": "number", "description": "Duration in seconds" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Upload timestamp" }
+      },
+      "required": ["title", "audioUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/songs/{songId}": {
+      "schema": { "$ref": "#/entities/Song" },
+      "description": "Songs uploaded by a specific user"
+    }
+  }
+}
