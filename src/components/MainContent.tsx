@@ -1,18 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MOCK_PLAYLISTS, MOCK_SONGS } from '../data/mockData';
 import { usePlayer } from '../context/PlayerContext';
-import { Play, Folder, FileAudio, Upload, Loader2 } from 'lucide-react';
+import { Play, Folder, FileAudio, Upload, Loader2, Heart } from 'lucide-react';
+import localforage from 'localforage';
 
 interface MainContentProps {
   currentView: string;
 }
 
 export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
-  const { playSong } = usePlayer();
+  const { playSong, likedSongs } = usePlayer();
   const [localFiles, setLocalFiles] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processProgress, setProcessProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    localforage.getItem<any[]>('local_files').then((files) => {
+      if (files) {
+        const restored = files.map(f => {
+          if (f.fileObj) {
+            return { ...f, audioUrl: URL.createObjectURL(f.fileObj) };
+          }
+          return f;
+        });
+        setLocalFiles(restored);
+      }
+    }).catch(console.error);
+  }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -35,26 +50,34 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
     for (let i = 0; i < validFiles.length; i++) {
       const file = validFiles[i];
       const objectUrl = URL.createObjectURL(file);
+      const songId = `local_${file.name}_${file.size}`;
+      
+      if (localFiles.some(s => s.id === songId)) continue;
+
       newSongs.push({
-        id: objectUrl,
+        id: songId,
         title: file.name.replace(/\.[^/.]+$/, ""),
         artist: 'Arquivo Local',
         album: 'Meu Aparelho',
         coverUrl: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=500&auto=format&fit=crop',
         audioUrl: objectUrl,
         duration: 0,
+        fileObj: file
       });
 
       setProcessProgress(Math.round(((i + 1) / validFiles.length) * 100));
-      // Pequeno atraso para permitir que a interface atualize e mostre o progresso
       await new Promise(resolve => setTimeout(resolve, 30));
     }
 
-    setLocalFiles((prev) => [...prev, ...newSongs]);
+    setLocalFiles((prev) => {
+      const updated = [...prev, ...newSongs];
+      localforage.setItem('local_files', updated).catch(console.error);
+      return updated;
+    });
+    
     setIsProcessing(false);
     setProcessProgress(0);
     
-    // Limpa o input para permitir selecionar os mesmos arquivos novamente se necessário
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -110,7 +133,7 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
             localFiles.map((file) => (
               <div 
                 key={file.id}
-                onClick={() => playSong(file)}
+                onClick={() => playSong(file, { id: 'local', name: 'Meus Arquivos', description: '', coverUrl: '', songs: localFiles })}
                 className="flex items-center gap-4 p-3 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
               >
                 <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-[#ff4e00] transition-colors">
@@ -145,6 +168,48 @@ export const MainContent: React.FC<MainContentProps> = ({ currentView }) => {
               <span className="text-white font-bold text-xl">{genre}</span>
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (currentView === 'library') {
+    return (
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 relative z-10">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+            <Heart className="w-10 h-10 text-white" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold text-white">Músicas Curtidas</h2>
+            <p className="text-gray-400 mt-1">{likedSongs.length} músicas</p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          {likedSongs.length === 0 ? (
+            <div className="text-center py-10 text-gray-400">
+              Você ainda não curtiu nenhuma música.
+            </div>
+          ) : (
+            likedSongs.map((song) => (
+              <div 
+                key={song.id}
+                onClick={() => playSong(song, { id: 'liked', name: 'Músicas Curtidas', description: '', coverUrl: '', songs: likedSongs })}
+                className="flex items-center gap-4 p-3 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
+              >
+                <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-gray-400 group-hover:text-white group-hover:bg-[#ff4e00] transition-colors relative overflow-hidden">
+                  <img src={song.coverUrl} alt={song.title} className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-20 transition-opacity" />
+                  <Play className="w-5 h-5 relative z-10" />
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-white font-medium truncate">{song.title}</p>
+                  <p className="text-gray-400 text-xs truncate">{song.artist}</p>
+                </div>
+                <Heart className="w-5 h-5 text-[#ff4e00] fill-[#ff4e00]" />
+              </div>
+            ))
+          )}
         </div>
       </div>
     );

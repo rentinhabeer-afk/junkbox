@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { Song, Playlist } from '../data/mockData';
+import localforage from 'localforage';
 
 interface PlayerContextType {
   currentSong: Song | null;
@@ -8,12 +9,15 @@ interface PlayerContextType {
   volume: number;
   progress: number;
   duration: number;
+  likedSongs: Song[];
   playSong: (song: Song, playlist?: Playlist) => void;
   togglePlayPause: () => void;
   playNext: () => void;
   playPrevious: () => void;
   setVolume: (volume: number) => void;
   seek: (time: number) => void;
+  toggleLike: (song: Song) => void;
+  isLiked: (songId: string) => boolean;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -25,8 +29,39 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [volume, setVolumeState] = useState(0.8);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [likedSongs, setLikedSongs] = useState<Song[]>([]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    localforage.getItem<Song[]>('liked_songs').then((songs) => {
+      if (songs) {
+        const restored = songs.map(song => {
+          if (song.fileObj) {
+            return { ...song, audioUrl: URL.createObjectURL(song.fileObj) };
+          }
+          return song;
+        });
+        setLikedSongs(restored);
+      }
+    }).catch(console.error);
+  }, []);
+
+  const toggleLike = (song: Song) => {
+    setLikedSongs(prev => {
+      const isCurrentlyLiked = prev.some(s => s.id === song.id);
+      let newLiked;
+      if (isCurrentlyLiked) {
+        newLiked = prev.filter(s => s.id !== song.id);
+      } else {
+        newLiked = [...prev, song];
+      }
+      localforage.setItem('liked_songs', newLiked).catch(console.error);
+      return newLiked;
+    });
+  };
+
+  const isLiked = (songId: string) => likedSongs.some(s => s.id === songId);
 
   useEffect(() => {
     audioRef.current = new Audio();
@@ -129,12 +164,15 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         volume,
         progress,
         duration,
+        likedSongs,
         playSong,
         togglePlayPause,
         playNext,
         playPrevious,
         setVolume,
         seek,
+        toggleLike,
+        isLiked,
       }}
     >
       {children}

@@ -3,7 +3,7 @@ import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Volume2, VolumeX, 
 import { usePlayer } from '../context/PlayerContext';
 
 export const Player: React.FC = () => {
-  const { currentSong, isPlaying, togglePlayPause, playNext, playPrevious, volume, setVolume, progress, duration, seek } = usePlayer();
+  const { currentSong, isPlaying, togglePlayPause, playNext, playPrevious, volume, setVolume, progress, duration, seek, toggleLike, isLiked } = usePlayer();
   const [isHoveringProgress, setIsHoveringProgress] = useState(false);
 
   const formatTime = (time: number) => {
@@ -60,18 +60,30 @@ export const Player: React.FC = () => {
             <span className="text-white font-medium text-sm hover:underline cursor-pointer truncate">{currentSong.title}</span>
             <span className="text-gray-400 text-xs hover:underline cursor-pointer truncate">{currentSong.artist}</span>
           </div>
-          <button className="hidden md:block ml-4 text-gray-400 hover:text-white transition">
-            <Heart className="w-5 h-5" />
+          <button 
+            onClick={() => toggleLike(currentSong)}
+            className="hidden md:block ml-4 hover:scale-110 transition"
+          >
+            <Heart className={`w-5 h-5 ${isLiked(currentSong.id) ? 'text-[#ff4e00] fill-[#ff4e00]' : 'text-gray-400 hover:text-white'}`} />
           </button>
         </div>
         
         {/* Mobile Controls */}
-        <div className="flex md:hidden items-center gap-4 flex-shrink-0">
-          <button className="text-gray-400 hover:text-white transition">
-            <Heart className="w-5 h-5" />
+        <div className="flex md:hidden items-center gap-3 flex-shrink-0">
+          <button 
+            onClick={() => toggleLike(currentSong)}
+            className="hover:scale-110 transition"
+          >
+            <Heart className={`w-5 h-5 ${isLiked(currentSong.id) ? 'text-[#ff4e00] fill-[#ff4e00]' : 'text-gray-400 hover:text-white'}`} />
+          </button>
+          <button onClick={playPrevious} className="text-gray-400 hover:text-white transition">
+            <SkipBack className="w-5 h-5" />
           </button>
           <button onClick={togglePlayPause} className="text-white">
             {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+          </button>
+          <button onClick={playNext} className="text-gray-400 hover:text-white transition">
+            <SkipForward className="w-5 h-5" />
           </button>
         </div>
       </div>

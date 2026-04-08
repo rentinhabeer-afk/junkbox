@@ -6,6 +6,7 @@ export interface Song {
   coverUrl: string;
   audioUrl: string;
   duration: number; // in seconds
+  fileObj?: File;
 }
 
 export interface Playlist {
